@@ -1,6 +1,6 @@
 # Overview
 
-An implementation of **John Conway's Game of Life** in **Svelte**.
+An implementation of **John Conway's Game of Life** written in **Svelte**.
 
 # Developing
 
