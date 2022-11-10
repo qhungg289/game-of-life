@@ -60,6 +60,7 @@
 		for (let i = 0; i < rows; i++) {
 			for (let j = 0; j < cols; j++) {
 				if (grid[i][j] == 1) {
+					canvasCtx.fillStyle = "#111827";
 					canvasCtx.fillRect(
 						j * (canvasElement.width / cols),
 						i * (canvasElement.height / rows),
