@@ -60,7 +60,7 @@
 		for (let i = 0; i < rows; i++) {
 			for (let j = 0; j < cols; j++) {
 				if (grid[i][j] == 1) {
-					canvasCtx.fillStyle = "#111827";
+					canvasCtx.fillStyle = "#18181b";
 					canvasCtx.fillRect(
 						j * (canvasElement.width / cols),
 						i * (canvasElement.height / rows),
@@ -77,6 +77,15 @@
 				}
 			}
 		}
+	}
+
+	function handleClickOnCanvas(e) {
+		const rect = canvasElement.getBoundingClientRect();
+		// Get the mouse position when click on the canvas
+		const x = Math.floor((e.clientX - rect.left) / CELL_SIZE);
+		const y = Math.floor((e.clientY - rect.top) / CELL_SIZE);
+		grid[y][x] = grid[y][x] ? 0 : 1;
+		draw();
 	}
 
 	onMount(() => {
@@ -107,34 +116,27 @@
 		width={cols * CELL_SIZE}
 		height={rows * CELL_SIZE}
 		bind:this={canvasElement}
-		on:click={(e) => {
-			const rect = canvasElement.getBoundingClientRect();
-			// Get the mouse position when click on the canvas
-			const x = Math.floor((e.clientX - rect.left) / CELL_SIZE);
-			const y = Math.floor((e.clientY - rect.top) / CELL_SIZE);
-			grid[y][x] = grid[y][x] ? 0 : 1;
-			draw();
-		}}
+		on:click={handleClickOnCanvas}
 	/>
 
-	<div class="space-y-12">
+	<div class="flex flex-col items-center gap-12">
 		<h1 class="text-2xl font-bold">Game of Life</h1>
 		<div class="flex flex-col gap-2">
 			<!-- Toggle the running state of the game -->
 			<button
-				class="p-2 rounded-lg bg-gray-900 hover:bg-gray-800 text-white"
+				class="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white"
 				on:click={() => (isRunning = !isRunning)}
 				>{isRunning ? "Pause" : "Play"}</button
 			>
 			<button
-				class="p-2 rounded-lg bg-gray-900 hover:bg-gray-800 text-white"
+				class="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white"
 				on:click={() => {
 					computeNextGen();
 					draw();
 				}}>Step</button
 			>
 			<button
-				class="p-2 rounded-lg bg-gray-900 hover:bg-gray-800 text-white"
+				class="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white"
 				on:click={() => {
 					isRunning = false;
 					generateNewPattern();
@@ -142,7 +144,7 @@
 				}}>New pattern</button
 			>
 			<button
-				class="p-2 rounded-lg bg-gray-900 hover:bg-gray-800 text-white"
+				class="p-2 rounded-lg bg-zinc-800 hover:bg-gray-700 text-white"
 				on:click={() => {
 					isRunning = false;
 					grid = create2dArray(rows, cols);
