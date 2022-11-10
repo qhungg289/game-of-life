@@ -121,19 +121,19 @@
 		<div class="flex flex-col gap-2">
 			<!-- Toggle the running state of the game -->
 			<button
-				class="bg-gray-300 p-2 hover:bg-gray-400"
+				class="p-2 rounded-lg bg-gray-900 hover:bg-gray-800 text-white"
 				on:click={() => (isRunning = !isRunning)}
 				>{isRunning ? "Pause" : "Play"}</button
 			>
 			<button
-				class="bg-gray-300 p-2 hover:bg-gray-400"
+				class="p-2 rounded-lg bg-gray-900 hover:bg-gray-800 text-white"
 				on:click={() => {
 					computeNextGen();
 					draw();
 				}}>Step</button
 			>
 			<button
-				class="bg-gray-300 p-2 hover:bg-gray-400"
+				class="p-2 rounded-lg bg-gray-900 hover:bg-gray-800 text-white"
 				on:click={() => {
 					isRunning = false;
 					generateNewPattern();
@@ -141,7 +141,7 @@
 				}}>New pattern</button
 			>
 			<button
-				class="bg-gray-300 p-2 hover:bg-gray-400"
+				class="p-2 rounded-lg bg-gray-900 hover:bg-gray-800 text-white"
 				on:click={() => {
 					isRunning = false;
 					grid = create2dArray(rows, cols);
