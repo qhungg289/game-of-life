@@ -1,83 +1,142 @@
 <script>
 	import { onDestroy, onMount } from "svelte";
-	import { v4 as uuidv4 } from "uuid";
+	import { create2dArray } from "./utils/utils";
 
-	let rows = 20;
-	let cols = 40;
 	let grid = [];
-	let nextGrid = [];
+	let rows = 60;
+	let cols = 80;
 	let isRunning = false;
-	let speed = 1000;
+	let speed = 75;
+	let canvasElement;
+	let canvasCtx;
 
-	function generateNewPattern() {
-		for (let i = 0; i < grid.length; i++) {
-			for (let j = 0; j < grid[i].length; j++) {
-				grid[i][j] = Math.floor(Math.random() * 2);
+	const CELL_SIZE = 10;
+
+	function generateNewPattern(value) {
+		for (let i = 0; i < rows; i++) {
+			for (let j = 0; j < cols; j++) {
+				grid[i][j] =
+					typeof value == "number" ? value : Math.floor(Math.random() * 2);
 			}
 		}
 	}
 
-	function countNeighbors(x, y) {}
-
-	$: {
-		grid = new Array(rows);
-		for (let i = 0; i < grid.length; i++) {
-			grid[i] = new Array(cols);
+	function countNeighbors(x, y) {
+		let count = 0;
+		for (let i = -1; i < 2; i++) {
+			for (let j = -1; j < 2; j++) {
+				const col = (x + j + cols) % cols;
+				const row = (y + i + rows) % rows;
+				count += grid[row][col];
+			}
 		}
-		generateNewPattern();
-	}
-	// $: console.table(grid);
+		count -= grid[y][x];
 
+		return count;
+	}
+
+	function computeNextGen() {
+		const nextGrid = create2dArray(rows, cols);
+
+		for (let i = 0; i < grid.length; i++) {
+			for (let j = 0; j < grid[i].length; j++) {
+				const state = grid[i][j];
+				const neighbors = countNeighbors(j, i);
+
+				if (state == 0 && neighbors == 3) {
+					nextGrid[i][j] = 1;
+				} else if (state == 1 && (neighbors < 2 || neighbors > 3)) {
+					nextGrid[i][j] = 0;
+				} else {
+					nextGrid[i][j] = state;
+				}
+			}
+		}
+
+		grid = nextGrid;
+	}
+
+	function draw() {
+		for (let i = 0; i < rows; i++) {
+			for (let j = 0; j < cols; j++) {
+				if (grid[i][j] == 1) {
+					canvasCtx.fillRect(
+						j * (canvasElement.width / cols),
+						i * (canvasElement.height / rows),
+						CELL_SIZE,
+						CELL_SIZE,
+					);
+				} else {
+					canvasCtx.clearRect(
+						j * (canvasElement.width / cols),
+						i * (canvasElement.height / rows),
+						CELL_SIZE,
+						CELL_SIZE,
+					);
+				}
+			}
+		}
+	}
+
+	onMount(() => {
+		grid = create2dArray(rows, cols);
+		generateNewPattern();
+		canvasCtx = canvasElement.getContext("2d");
+		draw();
+	});
+
+	// Game loop
 	const intervalId = setInterval(() => {
 		if (isRunning) {
-			console.log("tick");
+			computeNextGen();
+			draw();
 		}
 	}, speed);
 
+	// Clear the interval to prevent memory leak
 	onDestroy(() => clearInterval(intervalId));
 </script>
 
-<main class="flex flex-col items-center gap-4 mt-4">
-	<h1 class="text-2xl font-bold">Conway's Game of Life</h1>
-	<div>
-		<div>
-			<label for="rows">Rows</label>
-			<input
-				type="number"
-				id="rows"
-				class="text-right"
-				bind:value={rows}
-				min="5"
-			/>
+<main class="flex items-center justify-around h-screen">
+	<canvas
+		id="canvas"
+		width={cols * CELL_SIZE}
+		height={rows * CELL_SIZE}
+		bind:this={canvasElement}
+		class="border-2"
+	/>
+
+	<div class="space-y-4">
+		<h1 class="text-2xl font-bold">Game of Life</h1>
+		<div class="flex flex-col gap-2">
+			<!-- Toggle the running state of the game -->
+			<button class="bg-gray-300 p-2" on:click={() => (isRunning = !isRunning)}
+				>{isRunning ? "Pause" : "Play"}</button
+			>
+			<button
+				class="bg-gray-300 p-2"
+				on:click={() => {
+					computeNextGen();
+					draw();
+				}}>Step</button
+			>
+			<button
+				class="bg-gray-300 p-2"
+				on:click={() => {
+					isRunning = false;
+					generateNewPattern();
+					draw();
+				}}>New pattern</button
+			>
+			<button
+				class="bg-gray-300 p-2"
+				on:click={() => {
+					isRunning = false;
+					grid = create2dArray(rows, cols);
+					generateNewPattern(0);
+					draw();
+				}}>Clear</button
+			>
 		</div>
-		<div>
-			<label for="cols">Cols</label>
-			<input
-				type="number"
-				id="cols"
-				class="text-right"
-				bind:value={cols}
-				min="5"
-			/>
-		</div>
-	</div>
-	<div class="flex gap-2">
-		<button class="bg-gray-300 p-2" on:click={() => (isRunning = !isRunning)}
-			>Running: {isRunning}</button
-		>
-		<button class="bg-gray-300 p-2" on:click={generateNewPattern}
-			>New pattern</button
-		>
-	</div>
-	<div
-		style:display="grid"
-		style:grid-template-columns={`repeat(${cols}, minmax(0, 1rem))`}
-		style:grid-template-rows={`repeat(${rows}, minmax(0, 1rem))`}
-	>
-		{#each grid as row}
-			{#each row as cell (uuidv4())}
-				<div style:background-color={cell ? "black" : "white"} />
-			{/each}
-		{/each}
 	</div>
 </main>
