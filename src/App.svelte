@@ -149,10 +149,10 @@
 			<p class="flex justify-between w-full">Alive <span>{alive}</span></p>
 			<p class="flex justify-between w-full">Death <span>{death}</span></p>
 		</div>
-		<div class="flex flex-col gap-2">
+		<div class="flex flex-col gap-2 w-full">
 			<!-- Toggle the running state of the game -->
 			<button
-				class="flex items-center justify-between gap-2 py-2 px-4 rounded-lg bg-gray-800 hover:bg-gray-700 text-white"
+				class="flex items-center justify-between gap-2 w-full py-2 px-4 rounded-lg bg-gray-800 hover:bg-gray-700 text-white"
 				on:click={() => (isRunning = !isRunning)}
 				>{isRunning ? "Pause" : "Play"}
 				<svg
@@ -167,7 +167,7 @@
 				</svg>
 			</button>
 			<button
-				class="flex items-center justify-between gap-2 py-2 px-4 rounded-lg bg-gray-800 hover:bg-gray-700 text-white"
+				class="flex items-center justify-between gap-2 w-full py-2 px-4 rounded-lg bg-gray-800 hover:bg-gray-700 text-white"
 				on:click={() => {
 					computeNextGen();
 					draw();
@@ -184,7 +184,7 @@
 				</svg>
 			</button>
 			<button
-				class="flex items-center justify-between gap-2 py-2 px-4 rounded-lg bg-gray-800 hover:bg-gray-700 text-white"
+				class="flex items-center justify-between gap-2 w-full py-2 px-4 rounded-lg bg-gray-800 hover:bg-gray-700 text-white"
 				on:click={() => {
 					isRunning = false;
 					generateNewPattern();
@@ -204,7 +204,7 @@
 				</svg>
 			</button>
 			<button
-				class="flex items-center justify-between gap-2 py-2 px-4 rounded-lg bg-gray-800 hover:bg-gray-700 text-white"
+				class="flex items-center justify-between gap-2 w-full py-2 px-4 rounded-lg bg-gray-800 hover:bg-gray-700 text-white"
 				on:click={() => {
 					isRunning = false;
 					grid = create2dArray(rows, cols);
