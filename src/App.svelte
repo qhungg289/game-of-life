@@ -128,20 +128,20 @@
 	onDestroy(() => clearInterval(intervalId));
 </script>
 
-<main class="flex items-center justify-around h-screen">
-	<div>
-		<canvas
-			id="canvas"
-			class="border-4 border-gray-800 rounded-md select-none"
-			width={cols * CELL_SIZE}
-			height={rows * CELL_SIZE}
-			bind:this={canvasElement}
-			on:click={handleClickOnCanvas}
-		/>
-	</div>
+<main
+	class="flex flex-col md:flex-row items-center justify-around gap-4 h-screen"
+>
+	<canvas
+		id="canvas"
+		class="border-4 border-gray-800 rounded-md select-none w-4/5 md:w-auto"
+		width={cols * CELL_SIZE}
+		height={rows * CELL_SIZE}
+		bind:this={canvasElement}
+		on:click={handleClickOnCanvas}
+	/>
 
-	<div class="flex flex-col items-center gap-12">
-		<h1 class="text-2xl font-bold">Game of Life</h1>
+	<div class="flex md:flex-col items-start md:items-center gap-12">
+		<h1 class="hidden md:block text-2xl font-bold">Game of Life</h1>
 		<div
 			class="flex flex-col items-center gap-2 w-full py-2 px-4 rounded-lg bg-gray-800"
 		>
@@ -226,7 +226,7 @@
 			</button>
 		</div>
 
-		<div class="flex flex-col items-center gap-2">
+		<div class="hidden md:flex flex-col items-center gap-2">
 			<a
 				class="hover:underline"
 				href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"
