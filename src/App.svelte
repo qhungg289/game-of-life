@@ -138,14 +138,16 @@
 >
 	<canvas
 		id="canvas"
-		class="border-4 border-gray-300 dark:border-gray-800 rounded-lg select-none w-4/5 md:w-auto"
+		class="border-4 border-gray-300 dark:border-gray-800 rounded-lg select-none w-11/12 md:w-auto"
 		width={cols * CELL_SIZE}
 		height={rows * CELL_SIZE}
 		bind:this={canvasElement}
 		on:click={handleClickOnCanvas}
 	/>
 
-	<div class="flex md:flex-col items-start md:items-center gap-12">
+	<div
+		class="w-full md:w-auto px-4 md:px-0 flex md:flex-col items-start md:items-center gap-12"
+	>
 		<h1 class="hidden md:block text-2xl font-bold">Game of Life</h1>
 		<div
 			class="flex flex-col items-center gap-2 w-full py-2 px-4 rounded-lg bg-gray-200 dark:bg-gray-800"
@@ -160,6 +162,7 @@
 				Death <span class="font-semibold">{death}</span>
 			</p>
 		</div>
+
 		<div class="flex flex-col gap-2 w-full">
 			<!-- Toggle the running state of the game -->
 			<Button on:buttonClick={() => (isRunning = !isRunning)}>
