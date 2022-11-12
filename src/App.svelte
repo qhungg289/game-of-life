@@ -1,5 +1,6 @@
 <script>
 	import { onDestroy, onMount } from "svelte";
+	import Button from "./libs/Button.svelte";
 	import { create2dArray } from "./utils/utils";
 
 	let grid = [];
@@ -161,10 +162,8 @@
 		</div>
 		<div class="flex flex-col gap-2 w-full">
 			<!-- Toggle the running state of the game -->
-			<button
-				class="flex items-center justify-between gap-2 w-full py-2 px-4 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700"
-				on:click={() => (isRunning = !isRunning)}
-				>{isRunning ? "Pause" : "Play"}
+			<Button on:buttonClick={() => (isRunning = !isRunning)}>
+				{isRunning ? "Pause" : "Play"}
 				{#if isRunning}
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -188,15 +187,15 @@
 						/>
 					</svg>
 				{/if}
-			</button>
-			<button
-				class="flex items-center justify-between gap-2 w-full py-2 px-4 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700"
-				on:click={() => {
+			</Button>
+			<Button
+				on:buttonClick={() => {
 					isRunning = false;
 					computeNextGen();
 					draw();
 				}}
-				>Step <svg
+			>
+				Step <svg
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 20 20"
 					fill="currentColor"
@@ -206,15 +205,15 @@
 						d="M3.288 4.819A1.5 1.5 0 001 6.095v7.81a1.5 1.5 0 002.288 1.277l6.323-3.905c.155-.096.285-.213.389-.344v2.973a1.5 1.5 0 002.288 1.276l6.323-3.905a1.5 1.5 0 000-2.553L12.288 4.82A1.5 1.5 0 0010 6.095v2.973a1.506 1.506 0 00-.389-.344L3.288 4.82z"
 					/>
 				</svg>
-			</button>
-			<button
-				class="flex items-center justify-between gap-2 w-full py-2 px-4 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700"
-				on:click={() => {
+			</Button>
+			<Button
+				on:buttonClick={() => {
 					isRunning = false;
 					generateNewPattern();
 					draw();
 				}}
-				>Refresh <svg
+			>
+				Refresh <svg
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 20 20"
 					fill="currentColor"
@@ -226,16 +225,16 @@
 						clip-rule="evenodd"
 					/>
 				</svg>
-			</button>
-			<button
-				class="flex items-center justify-between gap-2 w-full py-2 px-4 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700"
-				on:click={() => {
+			</Button>
+			<Button
+				on:buttonClick={() => {
 					isRunning = false;
 					grid = create2dArray(rows, cols);
 					generateNewPattern(0);
 					draw();
 				}}
-				>Clear <svg
+			>
+				Clear <svg
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 20 20"
 					fill="currentColor"
@@ -247,14 +246,14 @@
 						clip-rule="evenodd"
 					/>
 				</svg>
-			</button>
-			<button
-				class="flex items-center justify-between gap-2 w-full py-2 px-4 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700"
-				on:click={() => {
+			</Button>
+			<Button
+				on:buttonClick={() => {
 					darkMode = !darkMode;
 					localStorage.setItem("darkMode", JSON.stringify(darkMode));
 				}}
-				>Theme
+			>
+				Theme
 				{#if !darkMode}
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -279,8 +278,8 @@
 							clip-rule="evenodd"
 						/>
 					</svg>
-				{/if}</button
-			>
+				{/if}
+			</Button>
 		</div>
 
 		<div class="hidden md:flex flex-col items-center gap-2">
