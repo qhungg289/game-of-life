@@ -12,6 +12,7 @@
 	let death = 0;
 	let canvasElement;
 	let canvasCtx;
+	let darkMode = false;
 
 	const CELL_SIZE = 10;
 
@@ -30,6 +31,7 @@
 		let count = 0;
 		for (let i = -1; i < 2; i++) {
 			for (let j = -1; j < 2; j++) {
+				// Wrap to the opposite side when reached the edge of the grid
 				const col = (x + j + cols) % cols;
 				const row = (y + i + rows) % rows;
 				count += grid[row][col];
@@ -65,21 +67,14 @@
 	function draw() {
 		for (let i = 0; i < rows; i++) {
 			for (let j = 0; j < cols; j++) {
+				const x = j * (canvasElement.width / cols);
+				const y = i * (canvasElement.height / rows);
+
 				if (grid[i][j] == 1) {
-					canvasCtx.fillStyle = "#9ca3af";
-					canvasCtx.fillRect(
-						j * (canvasElement.width / cols),
-						i * (canvasElement.height / rows),
-						CELL_SIZE,
-						CELL_SIZE,
-					);
+					canvasCtx.fillStyle = darkMode ? "#9ca3af" : "#4b5563";
+					canvasCtx.fillRect(x, y, CELL_SIZE, CELL_SIZE);
 				} else {
-					canvasCtx.clearRect(
-						j * (canvasElement.width / cols),
-						i * (canvasElement.height / rows),
-						CELL_SIZE,
-						CELL_SIZE,
-					);
+					canvasCtx.clearRect(x, y, CELL_SIZE, CELL_SIZE);
 				}
 			}
 		}
@@ -94,6 +89,10 @@
 		draw();
 	}
 
+	$: {
+		document.documentElement.classList.toggle("dark", darkMode);
+	}
+
 	onMount(() => {
 		grid = create2dArray(rows, cols);
 		generateNewPattern();
@@ -101,6 +100,11 @@
 		// Get the canvas context
 		canvasCtx = canvasElement.getContext("2d");
 		draw();
+
+		// Check localStorage for darkMode value
+		if (localStorage.getItem("darkMode")) {
+			darkMode = JSON.parse(localStorage.getItem("darkMode"));
+		}
 	});
 
 	// Main game loop
@@ -133,7 +137,7 @@
 >
 	<canvas
 		id="canvas"
-		class="border-4 border-gray-800 rounded-md select-none w-4/5 md:w-auto"
+		class="border-4 border-gray-300 dark:border-gray-800 rounded-lg select-none w-4/5 md:w-auto"
 		width={cols * CELL_SIZE}
 		height={rows * CELL_SIZE}
 		bind:this={canvasElement}
@@ -143,32 +147,52 @@
 	<div class="flex md:flex-col items-start md:items-center gap-12">
 		<h1 class="hidden md:block text-2xl font-bold">Game of Life</h1>
 		<div
-			class="flex flex-col items-center gap-2 w-full py-2 px-4 rounded-lg bg-gray-800"
+			class="flex flex-col items-center gap-2 w-full py-2 px-4 rounded-lg bg-gray-200 dark:bg-gray-800"
 		>
-			<p class="flex justify-between w-full">Gen <span>{gen}</span></p>
-			<p class="flex justify-between w-full">Alive <span>{alive}</span></p>
-			<p class="flex justify-between w-full">Death <span>{death}</span></p>
+			<p class="flex justify-between gap-2 w-full">
+				Gen <span class="font-semibold">{gen}</span>
+			</p>
+			<p class="flex justify-between gap-2 w-full">
+				Alive <span class="font-semibold">{alive}</span>
+			</p>
+			<p class="flex justify-between gap-2 w-full">
+				Death <span class="font-semibold">{death}</span>
+			</p>
 		</div>
 		<div class="flex flex-col gap-2 w-full">
 			<!-- Toggle the running state of the game -->
 			<button
-				class="flex items-center justify-between gap-2 w-full py-2 px-4 rounded-lg bg-gray-800 hover:bg-gray-700 text-white"
+				class="flex items-center justify-between gap-2 w-full py-2 px-4 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700"
 				on:click={() => (isRunning = !isRunning)}
 				>{isRunning ? "Pause" : "Play"}
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 20 20"
-					fill="currentColor"
-					class="w-5 h-5"
-				>
-					<path
-						d="M12.75 4a.75.75 0 00-.75.75v10.5c0 .414.336.75.75.75h.5a.75.75 0 00.75-.75V4.75a.75.75 0 00-.75-.75h-.5zM17.75 4a.75.75 0 00-.75.75v10.5c0 .414.336.75.75.75h.5a.75.75 0 00.75-.75V4.75a.75.75 0 00-.75-.75h-.5zM3.288 4.819A1.5 1.5 0 001 6.095v7.81a1.5 1.5 0 002.288 1.277l6.323-3.906a1.5 1.5 0 000-2.552L3.288 4.819z"
-					/>
-				</svg>
+				{#if isRunning}
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 20 20"
+						fill="currentColor"
+						class="w-5 h-5"
+					>
+						<path
+							d="M5.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75A.75.75 0 007.25 3h-1.5zM12.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75a.75.75 0 00-.75-.75h-1.5z"
+						/>
+					</svg>
+				{:else}
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 20 20"
+						fill="currentColor"
+						class="w-5 h-5"
+					>
+						<path
+							d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"
+						/>
+					</svg>
+				{/if}
 			</button>
 			<button
-				class="flex items-center justify-between gap-2 w-full py-2 px-4 rounded-lg bg-gray-800 hover:bg-gray-700 text-white"
+				class="flex items-center justify-between gap-2 w-full py-2 px-4 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700"
 				on:click={() => {
+					isRunning = false;
 					computeNextGen();
 					draw();
 				}}
@@ -184,7 +208,7 @@
 				</svg>
 			</button>
 			<button
-				class="flex items-center justify-between gap-2 w-full py-2 px-4 rounded-lg bg-gray-800 hover:bg-gray-700 text-white"
+				class="flex items-center justify-between gap-2 w-full py-2 px-4 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700"
 				on:click={() => {
 					isRunning = false;
 					generateNewPattern();
@@ -204,7 +228,7 @@
 				</svg>
 			</button>
 			<button
-				class="flex items-center justify-between gap-2 w-full py-2 px-4 rounded-lg bg-gray-800 hover:bg-gray-700 text-white"
+				class="flex items-center justify-between gap-2 w-full py-2 px-4 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700"
 				on:click={() => {
 					isRunning = false;
 					grid = create2dArray(rows, cols);
@@ -224,6 +248,39 @@
 					/>
 				</svg>
 			</button>
+			<button
+				class="flex items-center justify-between gap-2 w-full py-2 px-4 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700"
+				on:click={() => {
+					darkMode = !darkMode;
+					localStorage.setItem("darkMode", JSON.stringify(darkMode));
+				}}
+				>Theme
+				{#if !darkMode}
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 20 20"
+						fill="currentColor"
+						class="w-5 h-5"
+					>
+						<path
+							d="M10 2a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 2zM10 15a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 15zM10 7a3 3 0 100 6 3 3 0 000-6zM15.657 5.404a.75.75 0 10-1.06-1.06l-1.061 1.06a.75.75 0 001.06 1.06l1.06-1.06zM6.464 14.596a.75.75 0 10-1.06-1.06l-1.06 1.06a.75.75 0 001.06 1.06l1.06-1.06zM18 10a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0118 10zM5 10a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 015 10zM14.596 15.657a.75.75 0 001.06-1.06l-1.06-1.061a.75.75 0 10-1.06 1.06l1.06 1.06zM5.404 6.464a.75.75 0 001.06-1.06l-1.06-1.06a.75.75 0 10-1.061 1.06l1.06 1.06z"
+						/>
+					</svg>
+				{:else}
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 20 20"
+						fill="currentColor"
+						class="w-5 h-5"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M7.455 2.004a.75.75 0 01.26.77 7 7 0 009.958 7.967.75.75 0 011.067.853A8.5 8.5 0 116.647 1.921a.75.75 0 01.808.083z"
+							clip-rule="evenodd"
+						/>
+					</svg>
+				{/if}</button
+			>
 		</div>
 
 		<div class="hidden md:flex flex-col items-center gap-2">
@@ -231,7 +288,7 @@
 				class="hover:underline"
 				href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"
 				target="_blank"
-				rel="noreferrer">Rules</a
+				rel="noreferrer">Wiki</a
 			>
 			<a
 				class="hover:underline"
