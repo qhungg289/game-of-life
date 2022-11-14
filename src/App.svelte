@@ -1,7 +1,7 @@
 <script>
 	import { onDestroy, onMount } from "svelte";
 	import Button from "./libs/Button.svelte";
-	import { create2dArray } from "./utils/utils";
+	import { create2dArray } from "./utils/array";
 
 	let grid = [];
 	let rows = 60;
@@ -91,6 +91,7 @@
 	}
 
 	$: {
+		// Watch the darkMode value to toggle "dark" class on the html element
 		document.documentElement.classList.toggle("dark", darkMode);
 	}
 
