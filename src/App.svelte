@@ -90,8 +90,6 @@
 		const x = Math.floor(((e.clientX - rect.left) * scaleX) / CELL_SIZE);
 		const y = Math.floor(((e.clientY - rect.top) * scaleY) / CELL_SIZE);
 
-		console.log({ x, y });
-
 		grid[y][x] = grid[y][x] ? 0 : 1;
 		draw();
 	}
