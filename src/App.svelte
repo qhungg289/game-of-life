@@ -83,10 +83,15 @@
 	}
 
 	function handleClickOnCanvas(e) {
-		const rect = canvasElement.getBoundingClientRect();
 		// Get the mouse position when click on the canvas
-		const x = Math.floor((e.clientX - rect.left) / CELL_SIZE);
-		const y = Math.floor((e.clientY - rect.top) / CELL_SIZE);
+		const rect = canvasElement.getBoundingClientRect();
+		const scaleX = canvasElement.width / rect.width;
+		const scaleY = canvasElement.height / rect.height;
+		const x = Math.floor(((e.clientX - rect.left) * scaleX) / CELL_SIZE);
+		const y = Math.floor(((e.clientY - rect.top) * scaleY) / CELL_SIZE);
+
+		console.log({ x, y });
+
 		grid[y][x] = grid[y][x] ? 0 : 1;
 		draw();
 	}
@@ -136,11 +141,11 @@
 </script>
 
 <main
-	class="flex flex-col md:flex-row items-center justify-around gap-4 h-screen"
+	class="flex flex-col lg:flex-row items-center justify-around gap-4 py-4 h-screen"
 >
 	<canvas
 		id="canvas"
-		class="border-4 border-gray-300 dark:border-gray-800 rounded-lg select-none w-11/12 md:w-auto"
+		class="select-none w-11/12 lg:w-auto"
 		width={cols * CELL_SIZE}
 		height={rows * CELL_SIZE}
 		bind:this={canvasElement}
@@ -148,9 +153,9 @@
 	/>
 
 	<div
-		class="w-full md:w-auto px-4 md:px-0 flex md:flex-col items-start md:items-center gap-12"
+		class="w-full lg:w-auto px-4 lg:px-0 flex lg:flex-col items-start lg:items-center gap-12"
 	>
-		<h1 class="hidden md:block text-2xl font-bold">Game of Life</h1>
+		<h1 class="hidden lg:block text-2xl font-bold">Game of Life</h1>
 
 		<StatsMonitor {gen} {alive} {death} />
 
@@ -276,7 +281,7 @@
 			</Button>
 		</div>
 
-		<div class="hidden md:flex flex-col items-center gap-2">
+		<div class="hidden lg:flex flex-col items-center gap-2">
 			<a
 				class="hover:underline"
 				href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"
